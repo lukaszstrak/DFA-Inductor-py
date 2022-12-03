@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from itertools import chain
 from typing import List, Tuple, Iterator
 
-from pysat.solvers import Solver
+from .solver import Solver
 
 from ..structures import APTA, InconsistencyGraph
 from ..variables import VarPool

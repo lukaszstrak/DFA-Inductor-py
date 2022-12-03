@@ -26,7 +26,7 @@ from .structures import APTA, InconsistencyGraph
               help='symmetry breaking strategies')
 # TODO: implement timeout
 # @click.option('-t', '--timeout', metavar='<SECONDS>', type=int, help='set timeout')
-@click.option('-s', '--solver', metavar='<SOLVER>', required=True, help='solver name')
+# @click.option('-s', '--solver', metavar='<SOLVER>', required=True, help='solver name')
 @click.option('-cegar', '--cegar-mode', type=click.Choice(['none', 'lin-abs', 'lin-rel', 'geom']), default='none',
               show_default=True,
               help='counterexamples providing mode for CEGAR')
@@ -40,19 +40,25 @@ from .structures import APTA, InconsistencyGraph
               help='prints time statistics summary in the end')
 @click.option('-ig', '--inconsistency-graph', 'use_ig', is_flag=True, default=False, show_default=True,
               help='use inconsistency graph')
+@click.option('-nc', '--number_cores', 'number_cores', metavar='<INT>', type=int, default=4, show_default=True, 
+              help='number of cores to use for SAT solver')
+@click.option('-spath', '--solver-path', 'solver_path', metavar='<STR>', type=str, default="manysat.exe", show_default=True,
+              help='use inconsistency graph')
 @click.version_option(__version__, '-v', '--version')
 def cli(input_: str,
         lower_bound: int,
         upper_bound: int,
         output: Optional[str],
         sym_breaking: str,
-        solver: str,
+        # solver: str,
         cegar_mode: str,
         initial_amount: Optional[int],
         step_amount: Optional[int],
         assumptions_mode: str,
         print_statistics: bool,
-        use_ig: bool) -> None:
+        use_ig: bool,
+        number_cores: int,
+        solver_path: str) -> None:    
     STATISTICS.start_whole_timer()
     examples_provider = examples.get_examples_provider(input_, cegar_mode, initial_amount, step_amount)
     try:
@@ -73,7 +79,8 @@ def cli(input_: str,
 
     searcher = LSUS(apta,
                     ig,
-                    solver,
+                    number_cores,
+                    solver_path,
                     sym_breaking,
                     cegar_mode,
                     examples_provider,
